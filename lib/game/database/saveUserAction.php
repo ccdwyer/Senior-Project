@@ -3,10 +3,11 @@
 require_once("DBlogin.php");
 
 //Connect to MySQL Server
-mysql_connect($dbhost, $dbuser, $dbpass);
+mysqli_report(MYSQLI_REPORT_OFF);
+$conn = mysqli_connect($dbhost, $dbuser, $dbpass);
 
   //Select Database
-mysql_select_db($dbname) or die(mysql_error());
+mysqli_select_db($conn, $dbname) or die(mysqli_error($conn));
 
 //TRANSFERRED VARIABLES
 $user_table = $_GET["user_table"];
@@ -27,7 +28,7 @@ $ypos_col = "ypos";
 
 //QUERY
 $query = "UPDATE $user_table SET $level_col=$level, $coins_col=$coins, $potions_col=$potions, $keys_col=$keys, $xpos_col=$xpos, $ypos_col=$ypos WHERE $email_col='$email'";
-$qry_result = mysql_query($query) or die(mysql_error());
+$qry_result = mysqli_query($conn, $query) or die(mysqli_error($conn));
 
 
 ?>

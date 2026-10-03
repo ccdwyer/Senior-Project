@@ -3,10 +3,11 @@
 require_once("DBlogin.php");
 
 //Connect to MySQL Server
-mysql_connect($dbhost, $dbuser, $dbpass);
+mysqli_report(MYSQLI_REPORT_OFF);
+$conn = mysqli_connect($dbhost, $dbuser, $dbpass);
 
 //Select Database
-mysql_select_db($dbname) or die(mysql_error());
+mysqli_select_db($conn, $dbname) or die(mysqli_error($conn));
 
 $table_name = $_GET["table_name"];
 $values = $_GET["values"];
@@ -22,7 +23,7 @@ for($i=0; $i<count($value_array); $i++){
 }
 $queryDelete="DELETE FROM $table_name WHERE email = '$email'";
 
-$qry_result = mysql_query($queryDelete) or die(mysql_error());
-$qry_result = mysql_query($insert_query) or die(mysql_error());
-mysql_close();
+$qry_result = mysqli_query($conn, $queryDelete) or die(mysqli_error($conn));
+$qry_result = mysqli_query($conn, $insert_query) or die(mysqli_error($conn));
+mysqli_close($conn);
 ?>

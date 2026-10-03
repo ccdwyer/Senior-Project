@@ -3,10 +3,11 @@
 require_once("DBlogin.php");
 
 //Connect to MySQL Server
-mysql_connect($dbhost, $dbuser, $dbpass);
+mysqli_report(MYSQLI_REPORT_OFF);
+$conn = mysqli_connect($dbhost, $dbuser, $dbpass);
 
 //Select Database
-mysql_select_db($dbname) or die(mysql_error());
+mysqli_select_db($conn, $dbname) or die(mysqli_error($conn));
 
 //TRANSFERRED VARIABLES
 $weapons_table = $_GET["weapons_table"];
@@ -29,6 +30,6 @@ $email_col = "email";
 
 //query
 $query = "UPDATE $weapons_table SET $fist_col=$fistLevel, $boomerang_col=$boomerangLevel, $bow_col=$bowLevel, $grapplinghook_col=$grapplinghookLevel, $cloak_col=$cloakLevel, $wand_col=$wandLevel, $sword_col=$swordLevel WHERE $email_col='$email'";
-$qry_result = mysql_query($query) or die(mysql_error());
-mysql_close();
+$qry_result = mysqli_query($conn, $query) or die(mysqli_error($conn));
+mysqli_close($conn);
 ?>

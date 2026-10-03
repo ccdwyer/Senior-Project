@@ -1,6 +1,6 @@
 <?php
 $dbhost = "localhost";
-$dbuser = "chrisdwy";
-$dbpass = "sabre68df2";
+$dbuser = "root";
+$dbpass = "";
 $dbname = "chrisdwy_seniorProject";
 ?>

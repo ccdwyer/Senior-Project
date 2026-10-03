@@ -2,10 +2,11 @@
 require_once("DBlogin.php");
 
   //Connect to MySQL Server
-mysql_connect($dbhost, $dbuser, $dbpass);
+mysqli_report(MYSQLI_REPORT_OFF);
+$conn = mysqli_connect($dbhost, $dbuser, $dbpass);
 
   //Select Database
-mysql_select_db($dbname) or die(mysql_error());
+mysqli_select_db($conn, $dbname) or die(mysqli_error($conn));
 
 //PART B TRANSFERRED VARIABLES
 $users_table = $_GET["users_table"];
@@ -23,63 +24,63 @@ $playerChests = "";
 $playerDoors = "";
 $returnString = "";
 
-$password = mysql_real_escape_string($password);
-$email = mysql_real_escape_string($email);
+$password = mysqli_real_escape_string($conn, $password);
+$email = mysqli_real_escape_string($conn, $email);
 
 $queryUsers = "SELECT * FROM $users_table WHERE $email_col = '$email'";
-$qry_result = mysql_query($queryUsers) or die(mysql_error());
-$row = mysql_fetch_array($qry_result);
+$qry_result = mysqli_query($conn, $queryUsers) or die(mysqli_error($conn));
+$row = mysqli_fetch_array($qry_result);
 
 $hash = hash("sha256", $password);
-$hash = hash("sha256", $row["hashID"].$hash);
+$hash = $row ? hash("sha256", $row["hashID"].$hash) : "";
 
-if(strcmp($row["password"], $hash) == 0){
+if($row && strcmp($row["password"], $hash) == 0){
 	$returnString = $returnString . $row["level"]." ".$row["coins"]." ".$row["potions"]." ".$row["game_keys"]." ".$row["xpos"]." ".$row["ypos"]." ";
 	$queryWeapons = "SELECT * FROM $weapons_table WHERE $email_col = '$email'";
 	$queryKeys = "SELECT * FROM $keys_table WHERE $email_col = '$email'";
 	$queryChests = "SELECT * FROM $chests_table WHERE $email_col = '$email'";
 	$queryDoors = "SELECT * FROM $doors_table WHERE $email_col = '$email'";
-	$qry_result = mysql_query($queryWeapons) or die(mysql_error());
-	$row = mysql_fetch_array($qry_result);
+	$qry_result = mysqli_query($conn, $queryWeapons) or die(mysqli_error($conn));
+	$row = mysqli_fetch_array($qry_result);
 	$playerWeapons = $row["boomerang"]." ".$row["fist"]." ".$row["grapplinghook"]." ".$row["wand"]." ".$row["cloak"]." ".$row["bow"]." ".$row["sword"].",";
 	$returnString = $returnString . $playerWeapons;
 	
 	//get key list
-	$qry_result = mysql_query($queryKeys) or die(mysql_error());
-	$record_set = mysql_num_rows($qry_result);
-	$row = mysql_fetch_array($qry_result);
+	$qry_result = mysqli_query($conn, $queryKeys) or die(mysqli_error($conn));
+	$record_set = mysqli_num_rows($qry_result);
+	$row = mysqli_fetch_array($qry_result);
 	for($i=0; $i<$record_set; $i++){
 		if($i<$record_set-1)
 			$playerKeys = $playerKeys.$row["keyID"]." ";
 		else
 			$playerKeys = $playerKeys.$row["keyID"].",";
-		$row = mysql_fetch_array($qry_result);
+		$row = mysqli_fetch_array($qry_result);
 	}
 	$returnString = $returnString . $playerKeys;
 	
 	//get chest list
-	$qry_result = mysql_query($queryChests) or die(mysql_error());
-	$record_set = mysql_num_rows($qry_result);
-	$row = mysql_fetch_array($qry_result);
+	$qry_result = mysqli_query($conn, $queryChests) or die(mysqli_error($conn));
+	$record_set = mysqli_num_rows($qry_result);
+	$row = mysqli_fetch_array($qry_result);
 	for($i=0; $i<$record_set; $i++){
 		if($i<$record_set-1)
 			$playerChests = $playerChests.$row["chestID"]." ";
 		else
 			$playerChests = $playerChests.$row["chestID"].",";
-		$row = mysql_fetch_array($qry_result);
+		$row = mysqli_fetch_array($qry_result);
 	}
 	$returnString = $returnString . $playerChests;
 	
 	//get door list
-	$qry_result = mysql_query($queryDoors) or die(mysql_error());
-	$record_set = mysql_num_rows($qry_result);
-	$row = mysql_fetch_array($qry_result);
+	$qry_result = mysqli_query($conn, $queryDoors) or die(mysqli_error($conn));
+	$record_set = mysqli_num_rows($qry_result);
+	$row = mysqli_fetch_array($qry_result);
 	for($i=0; $i<$record_set; $i++){
 		if($i<$record_set-1)
 			$playerDoors = $playerDoors.$row["doorID"]." ";
 		else
 			$playerDoors = $playerDoors.$row["doorID"];
-		$row = mysql_fetch_array($qry_result);
+		$row = mysqli_fetch_array($qry_result);
 	}
 	$returnString = $returnString . $playerDoors;
 	
